@@ -7,6 +7,7 @@ const rateLimit = require("./utils/rateLimit");
 const createLogger = require("./utils/logger");
 const logger = createLogger(__filename);
 const formatResponse = require("./middleware/formatResponse.middleware");
+const unknownErrorMiddleware = require("./middleware/error/unknownError.middleware");
 
 const app = express();
 app.use(helmet());
@@ -17,8 +18,10 @@ app.use(morgan);
 app.use(formatResponse);
 
 app.get("/", (req, res) => {
-  res.formatResponse("Coding is so much fun!!");
+  throw new Error("error");
 });
+
+app.use(unknownErrorMiddleware);
 
 app.listen(config.PORT, () => {
   logger.info(`Server listening on port ${config.PORT}`);
