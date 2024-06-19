@@ -20,7 +20,7 @@ const getStudentById = async (req, res, next) => {
   res.formatResponse(student);
 };
 
-const updateStudentsById = async (req, res, next) => {
+const updateStudentById = async (req, res, next) => {
   const { id } = req.params;
   const { firstName, lastName, email } = req.body;
   const student = await StudentModel.findByIdAndUpdate(
@@ -58,6 +58,6 @@ module.exports = {
   getAllStudents,
   getStudentById,
   addStudent,
-  updateStudentsById,
+  updateStudentById,
   deleteStudentById,
 };

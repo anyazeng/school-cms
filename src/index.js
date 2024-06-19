@@ -8,6 +8,7 @@ const createLogger = require("./utils/logger");
 const logger = createLogger(__filename);
 const formatResponse = require("./middleware/formatResponse.middleware");
 const unknownErrorMiddleware = require("./middleware/error/unknownError.middleware");
+const v1Router = require("./routes");
 
 const app = express();
 app.use(helmet());
@@ -17,9 +18,7 @@ app.use(express.json());
 app.use(morgan);
 app.use(formatResponse);
 
-app.get("/", (req, res) => {
-  throw new Error("error");
-});
+app.use("/v1", v1Router);
 
 app.use(unknownErrorMiddleware);
 
