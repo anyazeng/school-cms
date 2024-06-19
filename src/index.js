@@ -9,6 +9,8 @@ const logger = createLogger(__filename);
 const formatResponse = require("./middleware/formatResponse.middleware");
 const unknownErrorMiddleware = require("./middleware/error/unknownError.middleware");
 const v1Router = require("./routes");
+const { connect } = require("./routes/student.router");
+const connectToDB = require("./utils/db");
 
 const app = express();
 app.use(helmet());
@@ -22,6 +24,9 @@ app.use("/v1", v1Router);
 
 app.use(unknownErrorMiddleware);
 
-app.listen(config.PORT, () => {
-  logger.info(`Server listening on port ${config.PORT}`);
+//to make sure when DB is connected before listening on port
+connectToDB().then(() => {
+  app.listen(config.PORT, () => {
+    logger.info(`Server listening on port ${config.PORT}`);
+  });
 });
