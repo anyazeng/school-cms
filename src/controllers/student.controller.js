@@ -1,11 +1,24 @@
 const StudentModel = require("../models/student.model");
-// const formatResponse = require("../middleware/formatResponse.middleware"); 还需要在这里注册吗
+const studentRouter = require("../routes/student.router");
 
 //MONGODB commend line: db.collection.fine()
 const getAllStudents = async (req, res, next) => {
   // NOTE:PAGINATION
-  const students = await StudentModel.find().exec();
+  //if no page, parseInt(undifined)->NAN, NAN->false
+  const page = parseInt(req.query.page) || 1;
+  const pageSize = parseInt(req.query.pageSize) || 2;
+  const skip = (page - 1) * pageSize;
+  const students = await StudentModel.find().limit(pageSize).skip(skip).exec();
+  //NOTE: functions chaining: why? as every function would modify the object but at the same time return a new object
   res.formatResponse(students);
+  //traditional:
+  // res.formatResponse(students, 200, {
+  //   pagination: { total: await StudentModel.countDocuments() },
+  // });
+  //infinite scroll: the pagination above + the below
+  // res.formatResponse(students, 200, {
+  //   pagination: xxxxx, //no data->undefined
+  // });
 };
 
 //MONGODB commend line: find({_id:xxx})
@@ -37,11 +50,12 @@ const updateStudentById = async (req, res, next) => {
 
 const addStudent = async (req, res, next) => {
   const { firstName, lastName, email } = req.body;
-  const student = new StudentModel({ firstName, lastName, email }).exec();
+  const student = new StudentModel({ firstName, lastName, email });
   await student.save();
   res.formatResponse(student, 201);
   //student is a object for StudentModel, a document
   //save is a document method, it will trigger validation
+  //NOTE:no need use .exec()
 };
 
 const deleteStudentById = async (req, res, next) => {

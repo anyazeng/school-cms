@@ -13,6 +13,6 @@ studentRouter.get("/", getAllStudents);
 studentRouter.get("/:id", getStudentById);
 studentRouter.post("/", addStudent);
 studentRouter.patch("/:id", updateStudentById);
-studentRouter.delete("/", deleteStudentById);
+studentRouter.delete("/:id", deleteStudentById);
 
 module.exports = studentRouter;
