@@ -39,7 +39,7 @@ const updateStudentById = async (req, res, next) => {
   const student = await StudentModel.findByIdAndUpdate(
     id,
     { firstName, lastName, email },
-    { new: true }
+    { new: true } //NOTE:
   ).exec();
   if (!student) {
     res.formatResponse("Student not found", 404);
@@ -53,7 +53,7 @@ const addStudent = async (req, res, next) => {
   const student = new StudentModel({ firstName, lastName, email });
   await student.save();
   res.formatResponse(student, 201);
-  //student is a object for StudentModel, a document
+  //student is an object for StudentModel, a document
   //save is a document method, it will trigger validation
   //NOTE:no need use .exec()
 };
