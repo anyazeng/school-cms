@@ -16,6 +16,13 @@ const courseSchema = new Schema({
     default: "This is a description example",
     //不是required， 可以设置一个默认值，没有值传进来的时候可以用默认值
   },
+  //Bilateral binding
+  students: [
+    {
+      ref: "Student",
+      type: Schema.Types.ObjectId,
+    },
+  ],
 });
 
 module.exports = model("Course", courseSchema);

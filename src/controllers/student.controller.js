@@ -1,7 +1,9 @@
 const StudentModel = require("../models/student.model");
+const CourseModel = require("../models/course.model");
 const studentRouter = require("../routes/student.router");
 const createLogger = require("../utils/logger");
-const logo = createLogger(__filename);
+const { log } = require("winston");
+const logger = createLogger(__filename);
 
 //MONGODB commend line: db.collection.fine()
 const getAllStudents = async (req, res, next) => {
@@ -98,10 +100,59 @@ const deleteStudentById = async (req, res, next) => {
   }
 };
 
+const addStudentToCourse = async (req, res, next) => {
+  try {
+    //1.Get ids
+    const { studentId, courseId } = req.params;
+    //2.Find student and course by Ids. Make sure it exits
+    const student = await StudentModel.findById(studentId).exec();
+    const course = await CourseModel.findById(courseId).exec();
+    //3.Add student to course (check if the relation has bound)
+    if (!student || !course) {
+      res.formatResponse("Student or course not found", 404);
+      return;
+    }
+    //$addToSet
+    student.courses.addToSet(courseId);
+    course.students.addToSet(studentId);
+    //4.Save
+    await student.save();
+    await course.save();
+    //5.Return
+    res.formatResponse(student);
+  } catch (e) {
+    logger.info(e);
+    next(e);
+  }
+};
+
+const removeStudentFromCourse = async (req, res, next) => {
+  try {
+    const { studentId, courseId } = req.params;
+    const student = await StudentModel.findById(studentId).exec();
+    const course = await CourseModel.findById(courseId).exec();
+    if (!student || !course) {
+      res.formatResponse("Student or course not found", 404);
+      return;
+    }
+    //$pull
+    student.courses.pull(courseId);
+    course.students.pull(studentId);
+    await student.save();
+    await course.save();
+    res.formatResponse(student, 204);
+  } catch (error) {
+    logger.info(error);
+    next(error);
+  }
+};
+
 module.exports = {
   getAllStudents,
   getStudentById,
   addStudent,
   updateStudentById,
   deleteStudentById,
+  addStudentToCourse,
+  removeStudentFromCourse,
 };

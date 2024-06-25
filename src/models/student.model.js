@@ -29,6 +29,10 @@ const studentSchema = new Schema({
       },
     ],
   },
+  //Bilateral binding
+  //one student - many courses -> so []
+  courses: [{ ref: "Course", type: String }],
+  //Name of collection & type of Id
 });
 
 module.exports = model("Student", studentSchema);

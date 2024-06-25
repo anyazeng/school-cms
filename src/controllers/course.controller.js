@@ -2,6 +2,7 @@ const CourseModel = require("../models/course.model");
 const createLogger = require("../utils/logger");
 const logger = createLogger(__filename);
 const Joi = require("joi");
+const addCourseSchema = require("../validation/course.validation");
 /**
  * Error handling
  * 1.callback
@@ -53,18 +54,18 @@ const getCourseById = async (req, res, next) => {
 const addCourse = async (req, res, next) => {
   try {
     // const { code, name, description } = req.body;
-    //data validation
-    const schema = Joi.object({
-      name: Joi.string().min(2).max(255).required(),
-      description: Joi.string().optional(),
-      code: Joi.string()
-        .regex(/^[a-zA-Z]+[0-9]+$/)
-        .message("Expecting something like COMP001")
-        .uppercase()
-        .required(),
-      //has been tested by regex101
-    });
-    const validatedBody = await schema.validateAsync(req.body, {
+    // data validation
+    // const schema = Joi.object({
+    //   name: Joi.string().min(2).max(255).required(),
+    //   description: Joi.string().optional(),
+    //   code: Joi.string()
+    //     .regex(/^[a-zA-Z]+[0-9]+$/)
+    //     .message("Expecting something like COMP001")
+    //     .uppercase()
+    //     .required(),
+    //   //has been tested by regex101
+    // });
+    const validatedBody = await addCourseSchema.validateAsync(req.body, {
       allowUnknown: true, //allow data that's not within the schema
       stripUnknown: true, //but get rid of them
     });
