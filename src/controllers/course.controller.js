@@ -1,6 +1,7 @@
 const CourseModel = require("../models/course.model");
 const createLogger = require("../utils/logger");
 const logger = createLogger(__filename);
+const Joi = require("joi");
 /**
  * Error handling
  * 1.callback
@@ -51,8 +52,24 @@ const getCourseById = async (req, res, next) => {
 
 const addCourse = async (req, res, next) => {
   try {
-    const { code, name, description } = req.body;
-    const course = new CourseModel({ code, name, description });
+    // const { code, name, description } = req.body;
+    //data validation
+    const schema = Joi.object({
+      name: Joi.string().min(2).max(255).required(),
+      description: Joi.string().optional(),
+      code: Joi.string()
+        .regex(/^[a-zA-Z]+[0-9]+$/)
+        .message("Expecting something like COMP001")
+        .uppercase()
+        .required(),
+      //has been tested by regex101
+    });
+    const validatedBody = await schema.validateAsync(req.body, {
+      allowUnknown: true,
+      stripUnknown: true,
+    });
+
+    const course = new CourseModel(validatedBody);
     await course.save(); //TODO:need to error handeller
     res.formatResponse(course, 201);
   } catch (e) {

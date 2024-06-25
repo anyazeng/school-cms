@@ -1,5 +1,7 @@
 const StudentModel = require("../models/student.model");
 const studentRouter = require("../routes/student.router");
+const createLogger = require("../utils/logger");
+const logo = createLogger(__filename);
 
 //MONGODB commend line: db.collection.fine()
 const getAllStudents = async (req, res, next) => {
