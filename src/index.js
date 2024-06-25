@@ -12,6 +12,7 @@ const unknownErrorMiddleware = require("./middleware/error/unknownError.middlewa
 const v1Router = require("./routes");
 const { connect } = require("./routes/student.router");
 const connectToDB = require("./utils/db");
+const validationErrorMiddleware = require("./middleware/error/validationError.middleware");
 
 const app = express();
 app.use(helmet());
@@ -24,7 +25,7 @@ app.use(formatResponseMiddleware);
 app.use("/v1", v1Router);
 
 app.use(pathNotFoundMiddleware);
-
+app.use(validationErrorMiddleware);
 app.use(unknownErrorMiddleware);
 
 //to make sure when DB is connected before listening on port

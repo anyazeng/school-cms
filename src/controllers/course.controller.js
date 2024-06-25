@@ -65,12 +65,12 @@ const addCourse = async (req, res, next) => {
       //has been tested by regex101
     });
     const validatedBody = await schema.validateAsync(req.body, {
-      allowUnknown: true,
-      stripUnknown: true,
+      allowUnknown: true, //allow data that's not within the schema
+      stripUnknown: true, //but get rid of them
     });
 
     const course = new CourseModel(validatedBody);
-    await course.save(); //TODO:need to error handeller
+    await course.save();
     res.formatResponse(course, 201);
   } catch (e) {
     logger.info(e.message);
