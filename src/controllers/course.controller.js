@@ -1,7 +1,10 @@
 const CourseModel = require("../models/course.model");
 
 const getAllCourses = async (req, res, next) => {
-  const courses = await CourseModel.find().exec();
+  const page = parseInt(req.query.page) || 1;
+  const pageSize = parseInt(req.query.pageSize) || 2;
+  const skip = (page - 1) * pageSize;
+  const courses = await CourseModel.find().limit(pageSize).skip(skip).exec();
   res.formatResponse(courses);
 };
 
@@ -16,22 +19,18 @@ const getCourseById = async (req, res, next) => {
 };
 
 const addCourse = async (req, res, next) => {
-  const { _id, name, description } = req.body;
-  const course = new CourseModel({ _id, name, description });
-  await course.save();
+  const { code, name, description } = req.body;
+  const course = new CourseModel({ code, name, description });
+  await course.save(); //TODO:need to error handeller
   res.formatResponse(course, 201);
 };
 
 const updateCourseById = async (req, res, next) => {
   const { id } = req.params;
-  const { _id, name, description } = req.body;
+  const { name, description } = req.body;
   const course = await CourseModel.findByIdAndUpdate(
     id,
-    {
-      _id,
-      name,
-      description,
-    },
+    { name, description },
     { new: true }
   ).exec();
   if (!course) {

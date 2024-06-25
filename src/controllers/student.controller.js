@@ -35,7 +35,7 @@ const getStudentById = async (req, res, next) => {
 
 const updateStudentById = async (req, res, next) => {
   const { id } = req.params;
-  const { firstName, lastName, email } = req.body;
+  //TODO: data validtation
   const student = await StudentModel.findByIdAndUpdate(
     id,
     { firstName, lastName, email },
