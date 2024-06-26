@@ -3,6 +3,7 @@ const createLogger = require("../utils/logger");
 const logger = createLogger(__filename);
 const Joi = require("joi");
 const addCourseSchema = require("../validation/course.validation");
+const StudentModel = require("../models/student.model");
 /**
  * Error handling
  * 1.callback
@@ -107,6 +108,11 @@ const deleteCourseById = async (req, res, next) => {
       res.formatResponse("Course not found", 404);
       return;
     }
+    //NOTE: Cascade delete： In relational databases, when we delete a collection, we should delete the related records in other collections.
+    await StudentModel.updateMany(
+      { courses: course._id },
+      { $pull: { courses: course._id } }
+    );
     res.formatResponse(course, 204);
   } catch (e) {
     logger.info(e.message);

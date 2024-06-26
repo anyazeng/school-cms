@@ -37,7 +37,9 @@ const getAllStudents = async (req, res, next) => {
 const getStudentById = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const student = await StudentModel.findById(id).exec();
+    const student = await StudentModel.findById(id)
+      .populate("courses", "name")
+      .exec();
     if (!student) {
       res.formatResponse("Student not found", 404);
       return;
@@ -93,6 +95,11 @@ const deleteStudentById = async (req, res, next) => {
       res.formatResponse("Student not found", 404);
       return;
     }
+    //NOTE: Cascade delete： In relational databases, when we delete a collection, we should delete the related records in other collections.
+    await CourseModel.updateMany(
+      { students: student._id },
+      { $pull: { students: student._id } }
+    );
     res.formatResponse(student, 204);
   } catch (e) {
     logger.info(e.message);
