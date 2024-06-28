@@ -4,6 +4,7 @@ const logger = createLogger(__filename);
 const Joi = require("joi");
 const addCourseSchema = require("../validation/course.validation");
 const StudentModel = require("../models/student.model");
+const TeacherModel = require("../models/teacher.model");
 /**
  * Error handling
  * 1.callback
@@ -27,9 +28,12 @@ const StudentModel = require("../models/student.model");
 const getAllCourses = async (req, res, next) => {
   try {
     const page = parseInt(req.query.page) || 1;
-    const pageSize = parseInt(req.query.pageSize) || 2;
+    const pageSize = parseInt(req.query.pageSize) || 10;
     const skip = (page - 1) * pageSize;
     const courses = await CourseModel.find().limit(pageSize).skip(skip).exec();
+    //if we wanna sort we can add sort
+    //req.query.sort -> ?sort= -name ("-" in descending order)
+    // .sort("xx", "asc")   in ascending/descending order
     res.formatResponse(courses);
   } catch (e) {
     logger.info(e.message);
@@ -40,7 +44,9 @@ const getAllCourses = async (req, res, next) => {
 const getCourseById = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const course = await CourseModel.findById(id).exec();
+    const course = await CourseModel.findById(id)
+      .populate("teacher", "firstName lastName email -_id")
+      .exec();
     if (!course) {
       res.formatResponse("Course not found", 404);
       return;
@@ -112,6 +118,10 @@ const deleteCourseById = async (req, res, next) => {
     await StudentModel.updateMany(
       { courses: course._id },
       { $pull: { courses: course._id } }
+    );
+    await TeacherModel.updateMany(
+      { course: course._id },
+      { $set: { course: undefined } }
     );
     res.formatResponse(course, 204);
   } catch (e) {

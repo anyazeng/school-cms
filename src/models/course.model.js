@@ -23,6 +23,11 @@ const courseSchema = new Schema({
       type: Schema.Types.ObjectId,
     },
   ],
+
+  teacher: {
+    ref: "Teacher",
+    type: Schema.Types.ObjectId,
+  },
 });
 
 module.exports = model("Course", courseSchema);

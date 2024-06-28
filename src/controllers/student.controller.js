@@ -11,7 +11,7 @@ const getAllStudents = async (req, res, next) => {
     // NOTE:PAGINATION
     //if no page, parseInt(undifined)->NAN, NAN->false
     const page = parseInt(req.query.page) || 1;
-    const pageSize = parseInt(req.query.pageSize) || 2;
+    const pageSize = parseInt(req.query.pageSize) || 10;
     const skip = (page - 1) * pageSize;
     const students = await StudentModel.find()
       .limit(pageSize)
@@ -56,6 +56,7 @@ const updateStudentById = async (req, res, next) => {
   try {
     const { id } = req.params;
     //TODO: data validtation
+    const { firstName, lastName, email } = req.body;
     const student = await StudentModel.findByIdAndUpdate(
       id,
       { firstName, lastName, email },
