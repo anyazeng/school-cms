@@ -121,7 +121,7 @@ const deleteCourseById = async (req, res, next) => {
     );
     await TeacherModel.updateMany(
       { course: course._id },
-      { $set: { course: undefined } }
+      { $set: { course: null } } //unset?
     );
     res.formatResponse(course, 204);
   } catch (e) {

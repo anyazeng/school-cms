@@ -10,6 +10,7 @@ const optionalConfigs = {
 
 const requiredConfigs = {
   DB_CONNECTION_STRING: process.env.DB_CONNECTION_STRING,
+  JWT_SECRET: process.env.JWT_SECRET,
 };
 
 //requiredConfigs error handler: if some of the requiredConfigs have no values

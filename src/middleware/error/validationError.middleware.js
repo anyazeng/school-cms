@@ -4,5 +4,5 @@ module.exports = (error, req, res, next) => {
     res.formatResponse(error.message, 400);
     return;
   }
-  next();
+  next(error);
 };

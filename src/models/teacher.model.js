@@ -28,6 +28,9 @@ const teacherSchema = new Schema({
   course: {
     ref: "Course",
     type: String,
+    //unique: ture,   when create or delete unique index, always check Compass
+    //if the value of 'course' might be 'null', then add aparse after adding unique
+    //sparse: ture,   when create index, always check Compass
   },
 });
 

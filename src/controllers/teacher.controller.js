@@ -86,7 +86,7 @@ const deleteTeacherById = async (req, res, next) => {
     }
     await CourseModel.updateMany(
       { teacher: teacher._id },
-      { $set: { teacher: undefined } }
+      { $set: { teacher: null } } //unset??
     );
     res.formatResponse(teacher, 204);
   } catch (e) {
@@ -132,7 +132,7 @@ const addTeacherToCourse = async (req, res, next) => {
   }
 };
 
-//NOTE: null or undefined
+//NOTE: null or onSet
 const removeTeacherFromCourse = async (req, res, next) => {
   try {
     const { teacherId, courseId } = req.params;
@@ -143,8 +143,8 @@ const removeTeacherFromCourse = async (req, res, next) => {
       return;
     }
 
-    teacher.course = undefined;
-    course.teacher = undefined;
+    teacher.course = null;
+    course.teacher = null;
 
     await teacher.save();
     await course.save();
