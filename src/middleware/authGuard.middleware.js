@@ -20,6 +20,6 @@ module.exports = (req, res, next) => {
     res.formatResponse("Invalid token", 401);
     return;
   }
-  req.user = payload;
+  req.user = payload; //so authGuard can verify if token includes a specific role
   next();
 };
